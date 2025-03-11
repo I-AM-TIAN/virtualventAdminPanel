@@ -47,11 +47,13 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label('Correo')
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
-                    ->label('Status')
+                    ->label('Estado')
                     ->getStateUsing(function ($record) {
                         return $record->deleted_at ? 'Inactivo' : 'Activo';
                     })
@@ -60,14 +62,17 @@ class UserResource extends Resource
                         'danger' => 'Inactivo',
                     ]),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de creación')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Fecha de actualización')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label('Fecha de eliminación')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
