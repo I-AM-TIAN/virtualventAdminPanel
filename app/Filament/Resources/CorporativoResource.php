@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\RestoreAction;
+use App\Filament\Resources\CorporativoResource\Pages;
+use App\Filament\Resources\CorporativoResource\RelationManagers;
+use App\Models\Corporativo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,28 +13,40 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class CorporativoResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Corporativo::class;
 
-    protected static ?string $label = 'Usuario';
-    protected static ?string $pluralLabel = 'Usuarios';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $label = 'Corporativo';
+    protected static ?string $pluralLabel = 'Corporativos';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('nit')
+                    ->label('NIT')
+                    ->required()
+                    ->unique()
+                    ->numeric()
+                    ->minLength(9)
+                    ->maxLength(9),
+                Forms\Components\TextInput::make('razon_social')
+                    ->label('Razón Social')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
+                    ->label('Correo Electrónico')
                     ->email()
                     ->required()
+                    ->unique()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
+                Forms\Components\TextInput::make('telefono')
+                    ->label('Teléfono')
+                    ->minLength(10)
+                    ->maxLength(10)
                     ->required()
                     ->maxLength(255),
             ]);
@@ -46,12 +56,22 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nombre')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('nit')
+                    ->label('NIT')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('razon_social')
+                    ->label('Razón Social')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->label('Correo')
-                    ->searchable(),
+                    ->label('Correo Electrónico')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('telefono')
+                    ->label('Teléfono')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->label('Estado')
@@ -72,11 +92,6 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->label('Fecha de eliminación')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -93,6 +108,11 @@ class UserResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withTrashed();
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -103,14 +123,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListCorporativos::route('/'),
+            'create' => Pages\CreateCorporativo::route('/create'),
+            'edit' => Pages\EditCorporativo::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->where('tipousuario_id', 1)->withTrashed();
     }
 }
