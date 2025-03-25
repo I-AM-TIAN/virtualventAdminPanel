@@ -62,4 +62,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(tipoUsuario::class, 'tipousuario_id');
     }
+
+    public function categorias()
+    {
+        return $this->hasMany(Categoria::class);
+    }
 }
