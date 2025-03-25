@@ -15,9 +15,16 @@ class Corporativo extends Model
         'razon_social',
         'email',
         'telefono',
+        'user_id',
     ];
 
-    public function direccion(){
+    public function direccion()
+    {
         return $this->hasOne(Direccion::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

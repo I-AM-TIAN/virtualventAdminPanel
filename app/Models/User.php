@@ -51,8 +51,6 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-
-
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->tipousuario_id === 1;
@@ -66,5 +64,10 @@ class User extends Authenticatable implements FilamentUser
     public function categorias()
     {
         return $this->hasMany(Categoria::class);
+    }
+
+    public function corporativo()
+    {
+        return $this->hasOne(Corporativo::class);
     }
 }
