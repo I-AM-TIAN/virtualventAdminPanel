@@ -16,4 +16,8 @@ class Corporativo extends Model
         'email',
         'telefono',
     ];
+
+    public function direccion(){
+        return $this->hasOne(Direccion::class);
+    }
 }

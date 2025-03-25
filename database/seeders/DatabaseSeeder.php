@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Ciudad;
+use App\Models\Departamento;
+use App\Models\Pais;
 use App\Models\tipoUsuario;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -38,6 +41,18 @@ class DatabaseSeeder extends Seeder
             'tipousuario_id' => 1,
         ]);
 
-        
+        Pais::create([
+            'nombre' => 'Colombia',
+        ]);
+
+        Departamento::create([
+            'nombre' => 'Cordoba',
+            'pais_id' => 1,
+        ]);
+
+        Ciudad::create([
+            'nombre' => 'Monteria',
+            'departamento_id' => 1,
+        ]);
     }
 }

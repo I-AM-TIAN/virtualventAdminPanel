@@ -49,6 +49,47 @@ class CorporativoResource extends Resource
                     ->maxLength(10)
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Fieldset::make('Dirección')
+                    ->relationship('direccion') // Relación hasOne
+                    ->schema([
+                        // 🌎 País
+                        Forms\Components\Select::make('pais_id')
+                            ->label('País')
+                            ->relationship('pais', 'nombre')
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set) => $set('departamento_id', null)),
+
+                        // 🏛️ Departamento
+                        Forms\Components\Select::make('departamento_id')
+                            ->label('Departamento')
+                            ->options(function (callable $get) {
+                                $paisId = $get('pais_id');
+                                return $paisId
+                                    ? \App\Models\Departamento::where('pais_id', $paisId)->pluck('nombre', 'id')
+                                    : [];
+                            })
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(fn(callable $set) => $set('ciudad_id', null)),
+
+                        // 🏙️ Ciudad
+                        Forms\Components\Select::make('ciudad_id')
+                            ->label('Ciudad')
+                            ->options(function (callable $get) {
+                                $departamentoId = $get('departamento_id');
+                                return $departamentoId
+                                    ? \App\Models\Ciudad::where('departamento_id', $departamentoId)->pluck('nombre', 'id')
+                                    : [];
+                            })
+                            ->required(),
+
+                        // 🛣️ Detalle de la dirección
+                        Forms\Components\TextInput::make('detalle')
+                            ->label('Detalle')
+                            ->required()
+                            ->maxLength(255),
+                    ]),
             ]);
     }
 
