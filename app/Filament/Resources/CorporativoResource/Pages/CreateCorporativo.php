@@ -30,7 +30,7 @@ class CreateCorporativo extends CreateRecord
             'name' => $data['razon_social'],
             'email' => $email,
             'password' => Hash::make($password),
-            'tipo_usuario' => 2,
+            'tipousuario_id' => 2,
         ]);
 
         // 🧠 Guardar temporalmente para afterCreate()
