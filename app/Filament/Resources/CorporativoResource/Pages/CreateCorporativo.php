@@ -9,6 +9,8 @@ use Filament\Actions;
 use Illuminate\Support\Str;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class CreateCorporativo extends CreateRecord
 {
@@ -39,6 +41,32 @@ class CreateCorporativo extends CreateRecord
 
         // Asociar user al corporativo
         $data['user_id'] = $user->id;
+
+        // ✅ SUBIR LOGO A IMGBB
+    if (isset($data['logo_temp'])) {
+        $path = $data['logo_temp'];
+        $imageContent = Storage::disk('local')->get($path); // default disk
+        $base64Image = base64_encode($imageContent);
+
+        $response = Http::asForm()->post('https://api.imgbb.com/1/upload', [
+            'key' => env('IMGBB_API_KEY'),
+            'image' => $base64Image,
+        ]);
+
+        if ($response->successful()) {
+            $data['logo'] = $response->json('data.url'); // URL pública
+        } else {
+            throw new \Exception('No se pudo subir la imagen a ImgBB');
+        }
+
+        // Limpiar archivo temporal
+        Storage::delete($path);
+    }
+
+    // Quitar campo temporal
+    unset($data['logo_temp']);
+
+    return $data;
 
         return $data;
     }

@@ -37,6 +37,15 @@ class CorporativoResource extends Resource
                     ->label('Razón Social')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('logo_temp')
+                    ->label('Logo')
+                    ->image()
+                    ->required()
+                    ->maxSize(2048)
+                    ->preserveFilenames(true)
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg'])
+                    ->directory('temp-logos')
+                    ->visibility('private'), // no se usa directamente
                 Forms\Components\TextInput::make('email')
                     ->label('Correo Electrónico')
                     ->email()
