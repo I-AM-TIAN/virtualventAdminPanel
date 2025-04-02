@@ -18,60 +18,66 @@ class CreateCorporativo extends CreateRecord
 
     protected ?User $userTemp = null;
     protected ?string $passwordTemp = null;
+    protected ?string $logoTempPath = null;
 
     /**
      * Se ejecuta antes de guardar el Corporativo
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $password = Str::password(12);
-        $email = $data['email'];
+        if (!empty($data['logo_temp'])) {
+            $path = is_array($data['logo_temp']) ? $data['logo_temp'][0] : $data['logo_temp'];
+            $fullPath = storage_path("app/public/{$path}");
 
-        // 👤 Crear el usuario
-        $user = User::create([
-            'name' => $data['razon_social'],
-            'email' => $email,
-            'password' => Hash::make($password),
-            'tipousuario_id' => 2,
-        ]);
+            if (!file_exists($fullPath)) {
+                throw new \Exception("El archivo no existe: {$fullPath}");
+            }
 
-        // 🧠 Guardar temporalmente para afterCreate()
-        $this->userTemp = $user;
-        $this->passwordTemp = $password;
+            $imageKit = new \App\Services\ImageKitService();
+            $url = $imageKit->upload("public/{$path}");
 
-        // Asociar user al corporativo
-        $data['user_id'] = $user->id;
+            if (!$url) {
+                throw new \Exception("No se pudo subir el logo a ImageKit.");
+            }
 
-        // ✅ SUBIR LOGO A IMGBB
-    if (isset($data['logo_temp'])) {
-        $path = $data['logo_temp'];
-        $imageContent = Storage::disk('local')->get($path); // default disk
-        $base64Image = base64_encode($imageContent);
-
-        $response = Http::asForm()->post('https://api.imgbb.com/1/upload', [
-            'key' => env('IMGBB_API_KEY'),
-            'image' => $base64Image,
-        ]);
-
-        if ($response->successful()) {
-            $data['logo'] = $response->json('data.url'); // URL pública
-        } else {
-            throw new \Exception('No se pudo subir la imagen a ImgBB');
+            $data['logo'] = $url;
+            $this->logoTempPath = $path;
         }
 
-        // Limpiar archivo temporal
-        Storage::delete($path);
-    }
+        unset($data['logo_temp']);
 
-    // Quitar campo temporal
-    unset($data['logo_temp']);
+        if (empty($data['logo'])) {
+            throw new \Exception("El campo logo es obligatorio.");
+        }
 
-    return $data;
+        // Usuario relacionado
+        $password = Str::password(12);
+        $user = User::firstOrCreate(
+            ['email' => $data['email']],
+            [
+                'name' => $data['razon_social'],
+                'password' => Hash::make($password),
+                'tipousuario_id' => 2,
+            ]
+        );
+
+        $data['user_id'] = $user->id;
+
+        if ($user->wasRecentlyCreated) {
+            $this->userTemp = $user;
+            $this->passwordTemp = $password;
+        }
 
         return $data;
     }
 
-    protected function afterCreate():void{
+
+    protected function afterCreate(): void
+    {
+        if ($this->logoTempPath && Storage::disk('public')->exists($this->logoTempPath)) {
+            Storage::disk('public')->delete($this->logoTempPath);
+        }
+
         if ($this->userTemp && $this->passwordTemp) {
             $this->userTemp->notify(new CredencialesCorporativo(
                 $this->userTemp->email,

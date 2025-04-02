@@ -16,6 +16,7 @@ class Corporativo extends Model
         'email',
         'telefono',
         'user_id',
+        'logo',
     ];
 
     public function direccion()

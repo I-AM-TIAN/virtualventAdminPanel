@@ -45,7 +45,8 @@ class CorporativoResource extends Resource
                     ->preserveFilenames(true)
                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg'])
                     ->directory('temp-logos')
-                    ->visibility('private'), // no se usa directamente
+                    ->disk('public')
+                    ->storeFiles(),
                 Forms\Components\TextInput::make('email')
                     ->label('Correo Electrónico')
                     ->email()
@@ -114,6 +115,12 @@ class CorporativoResource extends Resource
                     ->label('Razón Social')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('logo')
+                    ->label('Logo')
+                    ->circular()
+                    ->size(50)
+                    ->disk('public')
+                    ->default('https://via.placeholder.com/150'),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Correo Electrónico')
                     ->searchable()

@@ -10,6 +10,7 @@
         "bezhansalleh/filament-language-switch": "*",
         "filament/filament": "^3.3",
         "guzzlehttp/guzzle": "^7.9",
+        "imagekit/imagekit": "^4.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },
