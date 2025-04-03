@@ -6,6 +6,7 @@ use App\Filament\Mitienda\Resources\ProductoResource\Pages;
 use App\Filament\Mitienda\Resources\ProductoResource\RelationManagers;
 use App\Models\Categoria;
 use App\Models\Producto;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\CreateRecord;
@@ -65,12 +66,50 @@ class ProductoResource extends Resource
         return $table
             ->columns([
                 //
+                Tables\Columns\ImageColumn::make('imagenes.0.imagen') // usa la primera imagen
+                    ->label('Foto')
+                    ->circular()
+                    ->height(50)
+                    ->width(50)
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('nombre')
+                    ->label('Nombre')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->label('Descripción')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('stock')
+                    ->label('Stock')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->label('Estado')
+                    ->getStateUsing(function ($record) {
+                        return $record->deleted_at ? 'Inactivo' : 'Activo';
+                    })
+                    ->colors([
+                        'success' => 'Activo',
+                        'danger' => 'Inactivo',
+                    ]),
+                Tables\Columns\TextColumn::make('precio')
+                    ->label('Precio')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('categoria.nombre')
+                    ->label('Categoría')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -84,6 +123,18 @@ class ProductoResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Filament::auth()->user();
+        $corporativoId = $user->corporativo->id ?? null;
+
+        return parent::getEloquentQuery()
+            ->withTrashed()
+            ->when($corporativoId, function (Builder $query) use ($corporativoId) {
+                $query->where('corporativo_id', $corporativoId);
+            });
     }
 
     public static function getPages(): array
