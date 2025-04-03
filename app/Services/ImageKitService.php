@@ -1,10 +1,11 @@
-<?php 
+<?php
 
 namespace App\Services;
 
 use ImageKit\ImageKit;
 
-class ImageKitService{
+class ImageKitService
+{
     protected $imageKit;
 
     public function __construct()
@@ -16,7 +17,7 @@ class ImageKitService{
         );
     }
 
-    public function upload(string $path): ?string
+    public function upload(string $path, string $folder = 'general'): ?string
     {
         $fullPath = storage_path("app/{$path}");
 
@@ -27,15 +28,11 @@ class ImageKitService{
         $response = $this->imageKit->upload([
             'file' => fopen($fullPath, 'r'),
             'fileName' => basename($fullPath),
-            'folder' => '/logos', // Opcional: subcarpeta en ImageKit
+            'folder' => "/{$folder}",
             'useUniqueFileName' => true,
         ]);
 
-        if (!empty($response->result->url)) {
-            return $response->result->url;
-        }
-
-        return null;
+        return $response->result->url ?? null;
     }
 
     public function deleteImage($fileId)

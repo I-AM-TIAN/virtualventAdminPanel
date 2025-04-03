@@ -8,6 +8,7 @@ use App\Models\Categoria;
 use App\Models\Producto;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,41 +26,37 @@ class ProductoResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nombre')
-                ->label('Nombre')
-                ->required(),
+                    ->label('Nombre')
+                    ->required(),
                 Forms\Components\Textarea::make('descripcion')
-                ->label('Descripción')
-                ->required(),
+                    ->label('Descripción')
+                    ->required(),
                 Forms\Components\TextInput::make('stock')
-                ->label('Stock')
-                ->required()
-                ->numeric(),
-                Forms\Components\TextInput::make('precio')
-                ->label('Precio')
-                ->numeric()
-                ->required(),
-                Forms\Components\Select::make('categoria_id')
-                ->label('Categoría')
-                ->options(
-                    Categoria::all()->pluck('nombre', 'id')
-                )
-                ->relationship('categoria', 'nombre')
-                ->required(),
-                Forms\Components\Repeater::make('imagenes')
-                ->label('Imágenes')
-                ->relationship()
-                ->schema([
-                    Forms\Components\FileUpload::make('imagen')
-                    ->label('Imagen')
-                    ->image()
+                    ->label('Stock')
                     ->required()
-                    ->imageEditor(),
-                ])
-                ->minItems(1)
-                ->maxItems(4)
-                ->addActionLabel('Agregar imagen')
-                ->collapsible()
-                ->columns(1),
+                    ->numeric(),
+                Forms\Components\TextInput::make('precio')
+                    ->label('Precio')
+                    ->numeric()
+                    ->required(),
+                Forms\Components\Select::make('categoria_id')
+                    ->label('Categoría')
+                    ->options(
+                        Categoria::all()->pluck('nombre', 'id')
+                    )
+                    ->relationship('categoria', 'nombre')
+                    ->required(),
+                Forms\Components\FileUpload::make('imagenes_temp')
+                    ->label('Fotos del producto')
+                    ->multiple()
+                    ->image()
+                    ->preserveFilenames()
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg'])
+                    ->directory('temp-productos')
+                    ->disk('public')
+                    ->storeFiles()
+                    ->required(fn($livewire) => $livewire instanceof CreateRecord)
+                    ->helperText('Podés subir varias imágenes. El orden no afecta.'),
             ]);
     }
 

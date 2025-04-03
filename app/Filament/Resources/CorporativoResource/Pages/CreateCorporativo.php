@@ -34,7 +34,7 @@ class CreateCorporativo extends CreateRecord
             }
 
             $imageKit = new \App\Services\ImageKitService();
-            $url = $imageKit->upload("public/{$path}");
+            $url = $imageKit->upload("public/{$path}", 'logos');
 
             if (!$url) {
                 throw new \Exception("No se pudo subir el logo a ImageKit.");
