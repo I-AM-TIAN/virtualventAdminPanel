@@ -26,4 +26,9 @@ class Producto extends Model
     {
         return $this->hasMany(Imagen::class);
     }   
+
+    public function item_orden()
+    {
+        return $this->hasMany(ItemOrden::class);
+    }
 }
