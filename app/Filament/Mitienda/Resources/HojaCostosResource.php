@@ -19,7 +19,7 @@ class HojaCostosResource extends Resource
 {
     protected static ?string $model = HojaCostos::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     
     protected static ?string $label = 'Hoja de costos';
 
