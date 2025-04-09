@@ -5,10 +5,12 @@ namespace App\Filament\Mitienda\Resources;
 use App\Filament\Mitienda\Resources\HojaCostosResource\Pages;
 use App\Filament\Mitienda\Resources\HojaCostosResource\RelationManagers;
 use App\Models\HojaCostos;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -66,6 +68,20 @@ class HojaCostosResource extends Resource
             ])
             ->actions([
                 //Tables\Actions\EditAction::make(),
+
+                Action::make('export_pdf')
+                ->label('Exportar PDF')
+                ->icon('heroicon-o-document-arrow-down')
+                ->action(function ($record) {
+                    $pdf = Pdf::loadView('pdf.hoja-costos', [
+                        'hoja' => $record,
+                    ]);
+
+                    return response()->streamDownload(
+                        fn () => print($pdf->stream()),
+                        'hoja-costos-' . $record->id . '.pdf'
+                    );
+                }),
             ])
             ->bulkActions([
                 //Tables\Actions\BulkActionGroup::make([
