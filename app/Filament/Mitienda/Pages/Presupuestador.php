@@ -2,6 +2,7 @@
 
 namespace App\Filament\Mitienda\Pages;
 
+use App\Models\HojaCostos;
 use Dom\Text;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -161,15 +162,18 @@ class Presupuestador extends Page implements HasForms
                                 'unitPrice' => $this->getUnitPrice(),
                             ]),
                     ]),
-            ])->submitAction(new HtmlString(Blade::render(<<<BLADE
-            <x-filament::button
-                type="submit"
-                size="sm"
-                color="success"
-            >
-                Submit
-            </x-filament::button>
-        BLADE)))
+            ])->submitAction(
+                new HtmlString(Blade::render(<<<'BLADE'
+                    <x-filament::button
+                        type="button"
+                        size="sm"
+                        color="success"
+                        wire:click="submit"
+                    >
+                        Guardar presupuesto
+                    </x-filament::button>
+                BLADE))
+            )
         ];
     }
 
@@ -199,7 +203,20 @@ class Presupuestador extends Page implements HasForms
 
     public function submit(): void
     {
-        $data = $this->form->getState;
+        $this->form->validate();
+
+        $data = $this->form->getState();
+        
+        HojaCostos::create([
+            'nombre' => $data['nombre'],
+            'cantidad' => $data['cantidad'],
+            'margen' => $data['margen'],
+            'materiales' => $data['materiales'],
+            'labores' => $data['labores'],
+            'indirectos' => $data['indirectos'],
+            'costo_total' => $this->getTotalCost(),
+            'costo_unitario' => $this->getUnitPrice(),
+        ]);
 
         Notification::make()
             ->title('Hoja de costos guardada correctamente ✅')
