@@ -23,24 +23,43 @@ class OrdenResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('total')
+                            ->label('Total')
+                            ->required()
+                            ->numeric()
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('num_items')
+                            ->label('Productos')
+                            ->required()
+                            ->numeric()
+                            ->maxLength(255),
+
+                        Forms\Components\Toggle::make('pagado')
+                            ->label('Estado del pago')
+                            ->required(),
+
+                        Forms\Components\DatePicker::make('fecha_pago')
+                            ->label('Fecha del pago')
+                            ->required(),
+                    ]),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('uuid')
+                    ->searchable()
+                    ->copyable(),
                 Tables\Columns\TextColumn::make('total')
                     ->label('Total')
                     ->sortable()
                     ->searchable(),
-                
-                Tables\Columns\TextColumn::make('num_items')
-                    ->label('Productos')
-                    ->sortable()
-                    ->searchable(),
-
+                    
                 Tables\Columns\TextColumn::make('pagado')
                     ->badge()
                     ->label('Estado del pago')
@@ -62,12 +81,8 @@ class OrdenResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -82,8 +97,6 @@ class OrdenResource extends Resource
     {
         return [
             'index' => Pages\ListOrdens::route('/'),
-            'create' => Pages\CreateOrden::route('/create'),
-            'edit' => Pages\EditOrden::route('/{record}/edit'),
         ];
     }
 }

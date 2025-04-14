@@ -13,6 +13,7 @@ class ItemOrden extends Model
     {
         return $this->belongsTo(Orden::class);
     }
+    
     public function producto()
     {
         return $this->hasMany(Producto::class);
