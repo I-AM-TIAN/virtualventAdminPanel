@@ -3,54 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Hoja de Costos - {{ $hoja->nombre }}</title>
+
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: #333;
+            margin: 40px;
+            position: relative;
         }
+
+        /* Posicionar el logo arriba a la derecha */
+        .logo-container {
+            position: absolute;
+            top: -50px;
+            right: 0;
+        }
+
+        .logo {
+            width: 130px;
+            height: auto;
+
+        }
+
+        .header {
+            margin-bottom: 40px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #444;
+        }
+
         .title {
-            text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
-            margin-bottom: 10px;
+            text-align: center;
+            color: #1a202c;
         }
+
         .section-title {
             font-weight: bold;
-            font-size: 14px;
-            border-bottom: 1px solid #000;
-            margin-top: 15px;
-            margin-bottom: 5px;
+            font-size: 16px;
+            color: #2c3e50;
+            border-bottom: 1px solid #999;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
         }
-        .line {
-            border-bottom: 1px dashed #aaa;
-            margin: 10px 0;
-        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
         }
-        .table td, .table th {
+
+        .table th {
+            background-color: #e2e8f0;
+            color: #000;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
             border: 1px solid #ccc;
-            padding: 6px;
         }
+
+        .table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
         .right { text-align: right; }
         .bold { font-weight: bold; }
+
         .summary {
-            margin-top: 15px;
-            border-top: 2px solid #000;
+            margin-top: 30px;
+            border-top: 2px solid #444;
             padding-top: 10px;
+            font-size: 13px;
+        }
+
+        .summary .line {
+            font-style: italic;
+            color: #555;
+        }
+
+        strong {
+            color: #1f2937;
         }
     </style>
 </head>
 <body>
-    <div class="title">🧾 Hoja de Costos</div>
+
+    <!-- Logo arriba a la derecha -->
+    <div class="logo-container">
+        <img src="{{ public_path('img/logo.png') }}" class="logo" alt="Logo Empresa">
+    </div>
+
+    <div class="header">
+        <div class="title">Hoja de Costos</div>
+    </div>
 
     <div><strong>Nombre del Producto:</strong> {{ $hoja->nombre }}</div>
     <div><strong>Cantidad de Producción:</strong> {{ $hoja->cantidad }}</div>
 
-    <div class="section-title">🧱 Materiales</div>
+    <div class="section-title">Materiales</div>
     <table class="table">
         <thead>
             <tr>
@@ -68,7 +123,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">🧍 Mano de Obra Directa</div>
+    <div class="section-title">Mano de Obra Directa</div>
     <table class="table">
         <thead>
             <tr>
@@ -86,7 +141,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">🏠 Costos Indirectos</div>
+    <div class="section-title">Costos Indirectos</div>
     <table class="table">
         <thead>
             <tr>
@@ -104,7 +159,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">📊 Totales</div>
+    <div class="section-title">Totales</div>
     <table class="table">
         <tbody>
             <tr>
@@ -122,9 +177,6 @@
         </tbody>
     </table>
 
-    <div class="summary">
-        <p><strong>Fórmula utilizada:</strong></p>
-        <p class="line">Precio Unitario = (Costo Total / Cantidad) × (1 + Margen%)</p>
-    </div>
+   
 </body>
 </html>
