@@ -17,7 +17,7 @@ class OrdenResource extends Resource
 {
     protected static ?string $model = Orden::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     public static function form(Form $form): Form
     {
@@ -59,7 +59,7 @@ class OrdenResource extends Resource
                     ->label('Total')
                     ->sortable()
                     ->searchable(),
-                    
+
                 Tables\Columns\TextColumn::make('pagado')
                     ->badge()
                     ->label('Estado del pago')
@@ -81,9 +81,11 @@ class OrdenResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('Ver detalle')
+                    ->url(fn($record) => static::getUrl('view', ['record' => $record]))
+                    ->icon('heroicon-o-eye'),
             ])
-            ->bulkActions([
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
@@ -97,6 +99,7 @@ class OrdenResource extends Resource
     {
         return [
             'index' => Pages\ListOrdens::route('/'),
+            'view' => Pages\ViewOrden::route('/{record}'),
         ];
     }
 }

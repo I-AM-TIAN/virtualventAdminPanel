@@ -10,6 +10,11 @@ class Orden extends Model
     protected $table = 'ordenes';
     protected $fillable = ['total', 'num_items','pagado','fecha_pago'];
 
+    protected $casts = [
+        'fecha_pago' => 'date',
+        'pagado' => 'boolean', // buena práctica también
+    ];
+
     /**
      * Boot method to generate UUID when creating a new model.
      */
