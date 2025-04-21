@@ -14,13 +14,14 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class HojaCostosResource extends Resource
 {
     protected static ?string $model = HojaCostos::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
-    
+
     protected static ?string $label = 'Hoja de costos';
 
     protected static ?string $pluralLabel = 'Hojas de costos';
@@ -67,26 +68,21 @@ class HojaCostosResource extends Resource
                 //
             ])
             ->actions([
-                //Tables\Actions\EditAction::make(),
-
                 Action::make('export_pdf')
-                ->label('Exportar PDF')
-                ->icon('heroicon-o-document-arrow-down')
-                ->action(function ($record) {
-                    $pdf = Pdf::loadView('pdf.hoja-costos', [
-                        'hoja' => $record,
-                    ]);
+                    ->label('Exportar PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(function ($record) {
+                        $pdf = Pdf::loadView('pdf.hoja-costos', [
+                            'hoja' => $record,
+                        ]);
 
-                    return response()->streamDownload(
-                        fn () => print($pdf->stream()),
-                        'hoja-costos-' . $record->id . '.pdf'
-                    );
-                }),
+                        return response()->streamDownload(
+                            fn() => print($pdf->stream()),
+                            'hoja-costos-' . $record->id . '.pdf'
+                        );
+                    }),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
-                  //  Tables\Actions\DeleteBulkAction::make(),
-                //]),
             ]);
     }
 
@@ -97,12 +93,16 @@ class HojaCostosResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('corporativo_id', Auth::user()?->corporativo?->id);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListHojaCostos::route('/'),
-          //  'create' => Pages\CreateHojaCostos::route('/create'),
-          //  'edit' => Pages\EditHojaCostos::route('/{record}/edit'),
         ];
     }
 }

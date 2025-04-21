@@ -15,6 +15,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 use Illuminate\Support\HtmlString;
@@ -203,6 +204,8 @@ class Presupuestador extends Page implements HasForms
 
     public function submit(): void
     {
+        $corporativoId = Auth::user()?->corporativo?->id;
+
         $this->form->validate();
 
         $data = $this->form->getState();
@@ -216,6 +219,7 @@ class Presupuestador extends Page implements HasForms
             'indirectos' => $data['indirectos'],
             'costo_total' => $this->getTotalCost(),
             'costo_unitario' => $this->getUnitPrice(),
+            'corporativo_id' => $corporativoId,
         ]);
 
         Notification::make()

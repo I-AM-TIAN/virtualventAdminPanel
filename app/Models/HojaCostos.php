@@ -15,6 +15,7 @@ class HojaCostos extends Model
         'margen',
         'costo_total',
         'costo_unitario',
+        'corporativo_id',
     ];
 
     protected $casts = [
@@ -24,4 +25,9 @@ class HojaCostos extends Model
         'costo_total' => 'float',
         'costo_unitario' => 'float',
     ];
+
+    public function corporativo()
+    {
+        return $this->belongsTo(Corporativo::class);
+    }
 }
