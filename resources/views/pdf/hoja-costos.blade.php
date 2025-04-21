@@ -14,7 +14,6 @@
             position: relative;
         }
 
-        /* Posicionar el logo arriba a la derecha */
         .logo-container {
             position: absolute;
             top: -50px;
@@ -24,7 +23,6 @@
         .logo {
             width: 130px;
             height: auto;
-
         }
 
         .header {
@@ -93,7 +91,6 @@
 </head>
 <body>
 
-    <!-- Logo arriba a la derecha -->
     <div class="logo-container">
         <img src="{{ public_path('img/logo.png') }}" class="logo" alt="Logo Empresa">
     </div>
@@ -114,12 +111,18 @@
             </tr>
         </thead>
         <tbody>
+            @php $subtotal_materiales = 0; @endphp
             @foreach($hoja->materiales as $material)
+                @php $subtotal_materiales += $material['costo']; @endphp
                 <tr>
                     <td>{{ $material['descripcion'] }}</td>
                     <td class="right">${{ number_format($material['costo'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td class="bold">Subtotal Materiales</td>
+                <td class="right bold">${{ number_format($subtotal_materiales, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -132,12 +135,18 @@
             </tr>
         </thead>
         <tbody>
+            @php $subtotal_labores = 0; @endphp
             @foreach($hoja->labores as $labor)
+                @php $subtotal_labores += $labor['costo']; @endphp
                 <tr>
                     <td>{{ $labor['descripcion'] }}</td>
                     <td class="right">${{ number_format($labor['costo'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td class="bold">Subtotal Mano de Obra</td>
+                <td class="right bold">${{ number_format($subtotal_labores, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -150,12 +159,18 @@
             </tr>
         </thead>
         <tbody>
+            @php $subtotal_indirectos = 0; @endphp
             @foreach($hoja->indirectos as $indirecto)
+                @php $subtotal_indirectos += $indirecto['costo']; @endphp
                 <tr>
                     <td>{{ $indirecto['descripcion'] }}</td>
                     <td class="right">${{ number_format($indirecto['costo'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td class="bold">Subtotal Indirectos</td>
+                <td class="right bold">${{ number_format($subtotal_indirectos, 0, ',', '.') }}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -177,6 +192,6 @@
         </tbody>
     </table>
 
-   
 </body>
 </html>
+
