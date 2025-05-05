@@ -30,4 +30,13 @@ class HojaCostos extends Model
     {
         return $this->belongsTo(Corporativo::class);
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $hoja) {
+            if (empty($hoja->uuid)) {
+                $hoja->uuid = \Illuminate\Support\Str::uuid()->toString();
+            }
+        });
+    }
 }

@@ -30,4 +30,13 @@ class Direccion extends Model
     {
         return $this->belongsTo(Ciudad::class);
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $direccion) {
+            if (empty($direccion->uuid)) {
+                $direccion->uuid = \Illuminate\Support\Str::uuid()->toString();
+            }
+        });
+    }
 }

@@ -14,4 +14,13 @@ class Imagen extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $imagen) {
+            if (empty($imagen->uuid)) {
+                $imagen->uuid = \Illuminate\Support\Str::uuid()->toString();
+            }
+        });
+    }
 }

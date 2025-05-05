@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Corporativo extends Model
 {
@@ -32,5 +33,14 @@ class Corporativo extends Model
     public function productos()
     {
         return $this->hasMany(Producto::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $corporativo) {
+            if (empty($corporativo->uuid)) {
+                $corporativo->uuid = Str::uuid()->toString();
+            }
+        });
     }
 }
