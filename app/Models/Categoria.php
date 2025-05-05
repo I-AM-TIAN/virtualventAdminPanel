@@ -17,9 +17,9 @@ class Categoria extends Model
      */
     protected static function booted(): void
     {
-        static::creating(function (self $orden) {
-            if (empty($orden->uuid)) {
-                $orden->uuid = Str::uuid()->toString();
+        static::creating(function (self $categoria) {
+            if (empty($categoria->uuid)) {
+                $categoria->uuid = Str::uuid()->toString();
             }
         });
     }
