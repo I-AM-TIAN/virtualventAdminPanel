@@ -26,6 +26,7 @@ class MitiendaPanelProvider extends PanelProvider
             ->id('mitienda')
             ->path('mitienda')
             ->login()
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Amber,
             ])
