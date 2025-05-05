@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -38,6 +39,21 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
+    /**
+     * Boot method to generate UUID when creating a new model.
+     */
+    /**
+     * Boot method to generate UUID when creating a new model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $user) {
+            if (empty($user->uuid)) {
+                $user->uuid = Str::uuid()->toString();
+            }
+        });
+    }
+    
     /**
      * Get the attributes that should be cast.
      *

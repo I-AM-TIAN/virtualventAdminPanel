@@ -99,7 +99,7 @@
         <div class="title">Hoja de Costos</div>
 
     <div style="text-align: center; margin-top: 5px; font-size: 14px;">
-    <strong>ID de la Hoja:</strong> {{ $hoja->id }}
+    <strong>ID:</strong> {{ $hoja->id }}
     </div>
 
     </div>
