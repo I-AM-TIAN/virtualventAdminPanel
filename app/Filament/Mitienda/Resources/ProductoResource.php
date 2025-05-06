@@ -40,6 +40,10 @@ class ProductoResource extends Resource
                     ->label('Precio')
                     ->numeric()
                     ->required(),
+                Forms\Components\TextInput::make('unidad')
+                    ->label('Unidad')
+                    ->required()
+                    ->placeholder('Ej: kilogramo, libra, unidad, etc.'),
                 Forms\Components\Select::make('categoria_id')
                     ->label('Categoría')
                     ->options(
@@ -97,6 +101,9 @@ class ProductoResource extends Resource
                 Tables\Columns\TextColumn::make('precio')
                     ->label('Precio')
                     ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('unidad')
+                    ->label('Unidad')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('categoria.nombre')
                     ->label('Categoría')
